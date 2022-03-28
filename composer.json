@@ -1,6 +1,6 @@
 {
     "type": "library",
-    "name": "locomotivemtl/charcoal-contrib-foobar",
+    "name": "locomotivemtl/charcoal-image-compression",
     "description": "Charcoal service provider for my cool feature.",
     "keywords": [
         "charcoal"
