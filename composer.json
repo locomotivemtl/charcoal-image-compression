@@ -1,0 +1,55 @@
+{
+    "type": "library",
+    "name": "locomotivemtl/charcoal-contrib-foobar",
+    "description": "Charcoal service provider for my cool feature.",
+    "keywords": [
+        "charcoal"
+    ],
+    "homepage": "https://locomotivemtl.github.io/charcoal-contrib-foobar/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Locomotive",
+            "homepage": "https://locomotive.ca"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1.x-dev"
+        }
+    },
+    "require": {
+        "php": ">7.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.1",
+        "squizlabs/php_codesniffer": "^3.5",
+        "php-coveralls/php-coveralls": "^2.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Charcoal\\": "src/Charcoal/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Charcoal\\Tests\\": "tests/Charcoal/"
+        }
+    },
+    "scripts": {
+        "test": [
+            "@tests"
+        ],
+        "tests": [
+            "@phplint",
+            "@phpcs",
+            "@phpunit"
+        ],
+        "phplint": "find {src,tests} -name '*.php' -print0 | xargs -0 -n1 -P8 php -l | grep -v '^No syntax errors detected'; test $? -eq 1",
+        "phpcs": "php vendor/bin/phpcs -ps --colors src/ tests/",
+        "phpcbf": "php vendor/bin/phpcbf -ps --colors src/ tests/",
+        "phpunit": "php vendor/bin/phpunit --coverage-text"
+    }
+}

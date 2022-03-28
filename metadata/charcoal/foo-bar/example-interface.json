@@ -1,0 +1,12 @@
+{
+    "properties": {
+        "qux": {
+            "type": "string",
+            "label": "Qux"
+        },
+        "baz": {
+            "type": "boolean",
+            "label": "Baz"
+        }
+    }
+}
