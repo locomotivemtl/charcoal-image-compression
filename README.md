@@ -7,8 +7,7 @@ Charcoal FooBar
 [![Coverage Status][badge-coveralls]][dev-coveralls]
 [![Build Status][badge-travis]][dev-travis]
 
-A [Charcoal][charcoal-app] service provider my cool feature.
-
+A [Charcoal][charcoal-app] module to handle image compression through compression api providers
 
 
 ## Table of Contents
@@ -34,7 +33,7 @@ A [Charcoal][charcoal-app] service provider my cool feature.
 The preferred (and only supported) method is with Composer:
 
 ```shell
-$ composer require locomotivemtl/charcoal-contrib-foobar
+$ composer require locomotivemtl/charcoal-image-compression
 ```
 
 

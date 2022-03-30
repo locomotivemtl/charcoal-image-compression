@@ -1,11 +1,15 @@
 {
     "type": "library",
     "name": "locomotivemtl/charcoal-image-compression",
-    "description": "Charcoal service provider for my cool feature.",
+    "description": "Charcoal module to handle image compression through compression api providers",
     "keywords": [
-        "charcoal"
+        "charcoal",
+        "Image",
+        "Optimization",
+        "Compression",
+        "Compress"
     ],
-    "homepage": "https://locomotivemtl.github.io/charcoal-contrib-foobar/",
+    "homepage": "https://locomotivemtl.github.io/charcoal-image-compression/",
     "license": "MIT",
     "authors": [
         {
