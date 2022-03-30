@@ -9,6 +9,9 @@ use Charcoal\ImageCompression\ImageCompressionConfig;
  */
 class ImageCompressionService
 {
+    /**
+     * @var ImageCompressionConfig
+     */
     private ImageCompressionConfig $imageCompressionConfig;
 
     /**
@@ -38,5 +41,4 @@ class ImageCompressionService
 
         return $this;
     }
-
 }

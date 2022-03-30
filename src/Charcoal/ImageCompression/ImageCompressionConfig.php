@@ -9,14 +9,12 @@ use Charcoal\Config\AbstractConfig;
  */
 class ImageCompressionConfig extends AbstractConfig
 {
-    private array $providers;
-
     /**
      * The default data is defined in a JSON file.
      *
      * @return array
      */
-    public function defaults()
+    public function defaults(): array
     {
         $baseDir = rtrim(realpath(__DIR__.'/../../../'), '/');
         $confDir = $baseDir.'/config';
