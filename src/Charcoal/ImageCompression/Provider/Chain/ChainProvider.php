@@ -34,11 +34,12 @@ class ChainProvider extends AbstractProvider implements ProviderInterface
     {
         foreach ($this->providers as $provider) {
             try {
-                $provider->compress($source, $target);
-
-                return true;
+                // Only stop on successful compression.
+                if ($provider->compress($source, $target)) {
+                    return true;
+                }
             } catch (ProviderException $e) {
-                // Log exception
+                // @todo: Log exception and keep looping through providers
             }
         }
 

@@ -2,6 +2,10 @@
 
 namespace Charcoal\ImageCompression;
 
+use Charcoal\Factory\FactoryInterface;
+use Charcoal\Factory\GenericFactory;
+use Charcoal\ImageCompression\Provider\ProviderInterface;
+use Charcoal\ImageCompression\Provider\Tinify\TinifyProvider;
 use Charcoal\ImageCompression\Service\ImageCompressionService;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
@@ -26,8 +30,63 @@ class ImageCompressionServiceProvider implements ServiceProviderInterface
             return new ImageCompressionConfig($configData);
         };
 
+        /**
+         * Factorize all providers in an array.
+         *
+         * @param Container $container
+         * @return array
+         */
         $container['image-compression/providers'] = function (Container $container) {
-            $providers = $container['image-compression/config']['providers'];
+            $providers = $container['image-compression/config']->get('providers');
+
+            if (!$providers) {
+                return [];
+            }
+
+            return array_map(function ($provider) use ($container) {
+                $type = ($provider['type'] ?? null);
+                if (!$type) {
+                    return null;
+                }
+
+                /** @var FactoryInterface $factory */
+                $factory = $container['image-compression/provider/factory'];
+
+                /** @var ProviderInterface $providerObject */
+                return $factory->create($type, $provider);
+            }, $providers);
+        };
+
+        /**
+         * @param Container $container The Pimple DI container.
+         * @return FactoryInterface
+         */
+        $container['image-compression/provider/factory'] = function (Container $container) {
+            return new GenericFactory([
+                'base_class'       => ProviderInterface::class,
+                'resolver_options' => [
+                    'suffix' => 'Provider'
+                ],
+                'map'              => [
+                    'tinify' => TinifyProvider::class,
+                ],
+                'callback'         => function ($provider) use ($container) {
+                    $provider->setDependencies([
+                        'logger' => $container['logger']
+                    ]);
+                }
+            ]);
+        };
+
+        /**
+         * @param Container $container The Pimple DI container.
+         * @return ImageCompressor
+         */
+        $container['image-compressor'] = function (Container $container) {
+            return new ImageCompressor([
+                'providers' => $container['image-compression/providers'],
+                'logger'    => $container['logger'],
+            ]);
         };
 
         /**
@@ -36,7 +95,7 @@ class ImageCompressionServiceProvider implements ServiceProviderInterface
          */
         $container['image-compression'] = function (container $container) {
             return new ImageCompressionService([
-                'image-compression/config' => $container['image-compression/config'],
+                'image-compression/config' => $container['image-compression/config']
             ]);
         };
     }
