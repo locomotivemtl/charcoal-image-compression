@@ -104,6 +104,13 @@ Each providers defines their own options. Here's an example of a provider config
 
 Multiple providers can be used at the same time and will be chained one after the other so that if a provider as reached a limit or fails, the next one on the list will be used instead.
 
+### List of `special` providers
+
+| Provider                                                                  | Package                                               | Feature                                                   | Stats                                                                                                                                                                                                                                                                                                                                       |
+|:--------------------------------------------------------------------------|:------------------------------------------------------|:----------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+[Chain](https://github.com/locomotivemtl/charcoal-image-compression/tree/master/src/Charcoal/ImageCompression/Provider/Chain) | `locomotivemtl/charcoal-image-compression/chain-provider` | Chaining providers <br> [Website](https://tinypng.com/developers) |
+
+
 ### List of available providers
 
 | Provider                                                                  | Package                                                    | Feature                                                      | Stats                                                                                                                                                                                                                                                                                                                                       |
@@ -127,6 +134,27 @@ $this->imageCompressor = $container['image-compressor'];
 
 // The compress method is used to compress a source file path to a target path.
 $this->imageCompressor->compress($source, $target)
+```
+
+The ImageCompressor class will use the predefined module configuration and providers. For a custom implementation, instantiate the providers manually
+
+```php
+use Charcoal\ImageCompression\Provider\Tinify\TinifyProvider;
+
+$provider = new TinifyProvider([...]);
+$provider->compress($source, $target);
+
+// Or use the special Chain Provider to chain providers together
+
+use Charcoal\ImageCompression\Provider\Tinify\TinifyProvider;
+use Charcoal\ImageCompression\Provider\Chain\ChainProvider;
+
+$chainProvider = new ChainProvider([
+    new TinifyProvider([...])
+]);
+
+$chainProvider->compress($source, $target);
+
 ```
 
 

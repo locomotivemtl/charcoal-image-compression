@@ -7,9 +7,54 @@ Tinify Compression Provider
 [![Coverage Status][badge-coveralls]][dev-coveralls]
 [![Build Status][badge-travis]][dev-travis]
 
+This is an image compression provider for the Tinify API.
+
+## Configuration
+
+The Tinify provider needs a Tinify **Api key**. The configuration can be project wide or scoped to the provider while instantiating.
+
+In project conifg, to use with ImageCompression module :
+```json
+{
+    "modules": {
+        "charcoal/image-compression/image-compression": {
+            "providers": [
+                {
+                    "type": "tinify",
+                    "key": "9CnT59Tj3D22vzWBM5bf8krKWsstrN5e"
+                }
+            ]
+        }
+    }
+}
+```
+
+When instantiating, passing the key in the provider constructor:
+```php
+use Charcoal\ImageCompression\Provider\Tinify\TinifyProvider;
+
+$provider = new TinifyProvider([
+    'key' => "9CnT59Tj3D22vzWBM5bf8krKWsstrN5e"
+]);
+```
+
+
 ## Usage
 
---TBD--
+```php
+use Charcoal\ImageCompression\Provider\Tinify\TinifyProvider;
+
+$provider = new TinifyProvider([
+    'key' => "9CnT59Tj3D22vzWBM5bf8krKWsstrN5e"
+]);
+
+// get the total compressions count for the current month
+$provider->compressionCount();
+
+// compress a file
+$provider->compress($source, $target);
+```
+Every API requests need an API key. Tinify supports a free tier which allows for 500 compressions per month.
 
 ## Installation
 
