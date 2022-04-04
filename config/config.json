@@ -1,2 +1,7 @@
 {
+    "metadata": {
+        "paths": [
+            "vendor/locomotivemtl/charcoal-image-compression/metadata"
+        ]
+    }
 }
