@@ -1,0 +1,130 @@
+{
+    "labels": {
+        "name": {
+            "en": "Registry",
+            "fr": "Régistre"
+        },
+        "singular_name": {
+            "en": "Registry",
+            "fr": "Régistre"
+        },
+        "edit_item": {
+            "en": "Edit Registry",
+            "fr": "Modifier le régistre"
+        },
+        "create_item": {
+            "en": "Create Registry",
+            "fr": "Créer un régistre"
+        },
+        "new_item": {
+            "en": "New Registry",
+            "fr": "Nouveau régistre"
+        },
+        "all_items": {
+            "en": "All Registries",
+            "fr": "Tous les régistres"
+        },
+        "menu_items": {
+            "en": "Registry",
+            "fr": "Régistre"
+        }
+    },
+    "admin": {
+        "lists": {
+            "default": {
+                "properties": [
+                    "size",
+                    "original_size",
+                    "memory_saved",
+                    "filename",
+                    "extension"
+                ],
+                "list_actions": [
+                    {
+                        "label": {
+                            "en": "New registry",
+                            "fr": "Nouvel registry"
+                        },
+                        "active": false,
+                        "ident": "create",
+                        "url": "object/edit?main_menu={{main_menu}}&obj_type={{obj_type}}"
+                    }
+                ],
+                "object_actions": {
+                    "edit": {
+                        "label": {
+                            "en": "Modify",
+                            "fr": "Modifier"
+                        },
+                        "url": "object/edit?main_menu={{main_menu}}&obj_type={{obj_type}}&obj_id={{id}}",
+                        "priority": 1
+                    }
+                },
+                "orders": {
+                    "position": {
+                        "property": "created",
+                        "mode": "desc"
+                    }
+                },
+                "pagination": {
+                    "num_per_page": 100
+                }
+            }
+        },
+        "default_list": "default",
+
+        "forms": {
+            "default": {
+                "label": {},
+                "groups": {
+
+                },
+                "sidebars": {
+                    "default": {
+                        "properties": [
+                            "created",
+                            "created_by",
+                            "last_modified",
+                            "last_modified_by"
+                        ]
+                    }
+                }
+            }
+        },
+        "default_form": "default",
+
+        "dashboards": {
+            "admin.edit": {
+                "layout": {
+                    "structure": [
+                        {"columns": [1]}
+                    ]
+                },
+                "widgets": {
+                    "form": {
+                        "type": "charcoal/admin/widget/object-form",
+                        "form_ident": "default",
+                        "group_display_mode": "tab"
+                    }
+                }
+            },
+            "admin.table": {
+                "layout": {
+                    "structure": [
+                        {"columns": [1]}
+                    ]
+                },
+                "widgets": {
+                    "table": {
+                        "type": "charcoal/admin/widget/table",
+                        "collection_ident": "default",
+                        "data_sources": ["request"]
+                    }
+                }
+            }
+        },
+        "default_create_dashboard": "admin.edit",
+        "default_edit_dashboard": "admin.edit",
+        "default_collection_dashboard": "admin.table"
+    }
+}

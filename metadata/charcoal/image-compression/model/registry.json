@@ -1,0 +1,19 @@
+{
+    "sources": {
+        "default": {
+            "type": "database",
+            "table": "compression_registries"
+        }
+    },
+    "default_source": "default",
+
+    "default_data": {},
+
+    "properties": {
+        "id": {
+            "type": "id",
+            "mode": "custom"
+        }
+    },
+    "key": "id"
+}

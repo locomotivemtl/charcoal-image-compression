@@ -1,0 +1,52 @@
+{
+    "properties": {
+        "size": {
+            "type": "number",
+            "l10n": false,
+            "label": {
+                "en": "Size",
+                "fr": "Taille"
+            }
+        },
+        "original_size": {
+            "type": "number",
+            "l10n": false,
+            "label": {
+                "en": "Original size",
+                "fr": "Taille originale"
+            }
+        },
+        "memory_saved": {
+            "type": "number",
+            "l10n": false,
+            "label": {
+                "en": "Memory saved",
+                "fr": "Mémoire sauvée"
+            }
+        },
+        "basename": {
+            "type": "string",
+            "l10n": false,
+            "label": {
+                "en": "Basename",
+                "fr": "Basename"
+            }
+        },
+        "extension": {
+            "type": "string",
+            "l10n": false,
+            "label": {
+                "en": "Extension",
+                "fr": "Extension"
+            }
+        },
+        "filename": {
+            "type": "string",
+            "l10n": false,
+            "label": {
+                "en": "Filename",
+                "fr": "Filename"
+            }
+        }
+    }
+}
