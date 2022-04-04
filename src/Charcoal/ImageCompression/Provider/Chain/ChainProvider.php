@@ -5,6 +5,7 @@ namespace Charcoal\ImageCompression\Provider\Chain;
 use Charcoal\ImageCompression\Provider\AbstractProvider;
 use Charcoal\ImageCompression\Provider\ProviderException;
 use Charcoal\ImageCompression\Provider\ProviderInterface;
+use Exception;
 
 /**
  * Class ChainProvider
@@ -40,6 +41,9 @@ class ChainProvider extends AbstractProvider implements ProviderInterface
                 }
             } catch (ProviderException $e) {
                 // @todo: Log exception and keep looping through providers
+                continue;
+            } catch (Exception $e) {
+                throw new ProviderException('There was an error processing the chain provider', $e->getCode(), $e);
             }
         }
 
