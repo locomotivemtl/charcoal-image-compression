@@ -95,7 +95,11 @@ class ImageCompressionServiceProvider implements ServiceProviderInterface
          */
         $container['image-compression'] = function (container $container) {
             return new ImageCompressionService([
-                'image-compression/config' => $container['image-compression/config']
+                'compressor'               => $container['image-compressor'],
+                'image-compression/config' => $container['image-compression/config'],
+                'translator'               => $container['translator'],
+                'factory'                  => $container['model/factory'],
+                'logger'                   => $container['logger'],
             ]);
         };
     }

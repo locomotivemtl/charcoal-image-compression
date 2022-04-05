@@ -24,6 +24,14 @@
                 "fr": "Mémoire sauvée"
             }
         },
+        "path": {
+            "type": "string",
+            "l10n": false,
+            "label": {
+                "en": "Path",
+                "fr": "Chemin"
+            }
+        },
         "basename": {
             "type": "string",
             "l10n": false,

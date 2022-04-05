@@ -11,36 +11,36 @@ interface RegistryInterface
     /**
      * The file size.
      *
-     * @return integer
+     * @return integer|null
      */
-    public function size(): int;
+    public function size(): ?int;
 
     /**
      * The size of the file before compression.
      *
-     * @return integer
+     * @return integer|null
      */
-    public function originalSize(): int;
+    public function originalSize(): ?int;
 
     /**
      * The amount of memory saved for the file after compression.
      *
-     * @return integer
+     * @return integer|null
      */
-    public function memorySaved(): int;
+    public function memorySaved(): ?int;
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function basename(): string;
+    public function basename(): ?string;
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function filename(): string;
+    public function filename(): ?string;
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function extension(): string;
+    public function extension(): ?string;
 }
