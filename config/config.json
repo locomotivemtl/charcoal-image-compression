@@ -1,7 +1,10 @@
 {
+    "view": {
+        "paths": []
+    },
     "metadata": {
         "paths": [
-            "vendor/locomotivemtl/charcoal-image-compression/metadata"
+            "vendor/locomotivemtl/charcoal-image-compression/metadata/"
         ]
     }
 }
