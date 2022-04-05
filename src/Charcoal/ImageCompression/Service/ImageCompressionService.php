@@ -95,7 +95,6 @@ class ImageCompressionService
      */
     public function compressAll()
     {
-
     }
 
     /**
