@@ -10,7 +10,7 @@ use Charcoal\App\Module\ModuleInterface;
  */
 class ImageCompressionModule extends AbstractModule implements ModuleInterface
 {
-    const APP_CONFIG = 'vendor/locomotivemtl/charcoal-contrib-tinify/config/config.json';
+    const APP_CONFIG = 'vendor/locomotivemtl/charcoal-image-compression/config/config.json';
 
     /**
      * Setup the module's dependencies.
