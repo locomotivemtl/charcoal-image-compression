@@ -29,7 +29,7 @@ In project conifg, to use with ImageCompression module :
 }
 ```
 
-When instantiating, passing the key in the provider constructor:
+When instantiating, passing the key in the provider constructor :
 ```php
 use Charcoal\ImageCompression\Provider\Tinify\TinifyProvider;
 
