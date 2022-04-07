@@ -1,0 +1,11 @@
+{
+    "admin": {
+        "routes": {
+            "scripts": {
+                "image-compression/batch-compress": {
+                    "ident": "charcoal/admin/image-compression/script/batch-compress"
+                }
+            }
+        }
+    }
+}
