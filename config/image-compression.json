@@ -1,3 +1,11 @@
 {
+    "batch_config": {
+        "file_extensions": [
+            "jpg",
+            "jpeg",
+            "png"
+        ],
+        "base_path": "uploads"
+    },
     "registry_object": "charcoal/image-compression/model/registry"
 }
