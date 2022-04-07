@@ -7,7 +7,7 @@ Chain Compression Provider
 [![Coverage Status][badge-coveralls]][dev-coveralls]
 [![Build Status][badge-travis]][dev-travis]
 
-This is a special provider for [ImageCompression](../../../../../) package that allows to combine multiple providers in a single process.
+This is a special provider for [_charcoal-image-compression_](https://github.com/locomotivemtl/charcoal-image-compression) package that allows to combine multiple providers in a single process.
 
 
 ## Usage

@@ -56,7 +56,7 @@ $ composer require locomotivemtl/charcoal-image-compression
 
 ## Service Provider
 
-The following services are provided with the use of [charcoal-image-compression](.)
+The following services are provided with the use of [_charcoal-image-compression_](https://github.com/locomotivemtl/charcoal-image-compression)
 
 ### Services
 
@@ -96,14 +96,14 @@ Charcoal image is hooked to use the compression module automatically once config
 
 ### Module Options
 
-| Option            | Type     | Description                                                                                                                                                 | Default                                     |
-|:------------------|:---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------|
-| `autoCompress`    | _bool_   | (_todo_) Whether to compress files when they are saved in charcoal                                                                                          | `true`                                      |
-| `registryObject`  | _string_ | The registry object to keep track of compression                                                                                                            | `charcoal/image-compression/model/registry` |
-| `batchConfig`     | _object_ | Options for the batch compression process                                                                                                                   | `n/a`                                       |
-| - `fileExtension` | _array_  | List of extensions to glob                                                                                                                                  | `[ "jpg", "jpeg", "png" ]`                  |
-| - `basePath`      | _string_ | The base path to glob from                                                                                                                                  | `uploads`                                   |
-| `providers`       | _array_  | List of providers with their options. Each provider have it's own set of options to define. To learn more, refere to the following section about providers. | `[]`                                        |
+| Option             | Type     | Description                                                                                                                                                 | Default                                     |
+|:-------------------|:---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------|
+| `autoCompress`     | _bool_   | (_todo_) Whether to compress files when they are saved in charcoal                                                                                          | `true`                                      |
+| `registryObject`   | _string_ | The registry object to keep track of compression                                                                                                            | `charcoal/image-compression/model/registry` |
+| `batchConfig`      | _object_ | Options for the batch compression process                                                                                                                   | `n/a`                                       |
+| ___`fileExtension` | _array_  | List of extensions to glob                                                                                                                                  | `[ "jpg", "jpeg", "png" ]`                  |
+| ___`basePath`      | _string_ | The base path to glob from                                                                                                                                  | `uploads`                                   |
+| `providers`        | _array_  | List of providers with their options. Each provider have it's own set of options to define. To learn more, refere to the following section about providers. | `[]`                                        |
 
 ## Providers
 

@@ -7,7 +7,7 @@ Tinify Compression Provider
 [![Coverage Status][badge-coveralls]][dev-coveralls]
 [![Build Status][badge-travis]][dev-travis]
 
-This is an image compression provider for the Tinify API.
+This is an image compression provider for the Tinify API. Can be used alone or wiht the [_charcoal-image-compression_](https://github.com/locomotivemtl/charcoal-image-compression) package.
 
 ## Configuration
 
