@@ -15,7 +15,6 @@ A [Charcoal][charcoal-app] module to handle image compression through compressio
 -   [Installation](#installation)
     -   [Dependencies](#dependencies)
 -   [Service Provider](#service-provider)
-    -   [Parameters](#parameters)
     -   [Services](#services)
 -   [Configuration](#configuration)
 -   [Usage](#usage)
