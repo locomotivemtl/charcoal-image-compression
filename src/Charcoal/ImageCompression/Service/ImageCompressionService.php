@@ -3,14 +3,20 @@
 namespace Charcoal\ImageCompression\Service;
 
 use Charcoal\Admin\Ui\FeedbackContainerTrait;
+use Charcoal\ImageCompression\BatchCompressionConfig;
 use Charcoal\ImageCompression\Contract\Model\RegistryInterface;
+use Charcoal\ImageCompression\Helper\Progression;
 use Charcoal\ImageCompression\ImageCompressionConfig;
 use Charcoal\ImageCompression\ImageCompressor;
 use Charcoal\Model\ModelFactoryTrait;
 use Charcoal\Model\ModelInterface;
+use Charcoal\Source\DatabaseSource;
 use Charcoal\Source\DatabaseSourceInterface;
 use Charcoal\Translator\TranslatorAwareTrait;
+use Generator;
+use PDO;
 use Psr\Log\LoggerAwareTrait;
+use RuntimeException;
 
 /**
  * Image Compression Service
@@ -65,7 +71,9 @@ class ImageCompressionService
         }
 
         // validate compression
-        if ($registry->isCompressed()) {
+        if ((isset($this->copmressedFilesIds) && in_array($registry['id'], $this->copmressedFilesIds))
+            || $registry->isCompressed()
+        ) {
             // Don't compress more than once.
             return false;
         }
@@ -91,10 +99,82 @@ class ImageCompressionService
     }
 
     /**
-     * @return void
+     * @return Generator|boolean
      */
-    public function compressAll()
+    public function batchCompress()
     {
+        $this->loadCompressedFilesIds();
+        $files = $this->gatherFilesToCompress();
+
+        $numFiles = count($files);
+
+        if (!$numFiles) {
+            return false;
+        }
+
+        $progress = new Progression($numFiles);
+
+        foreach ($files as $file) {
+            yield $progress->updateCompressionCount($this->compress($file))
+                           ->setCurrentFile($file)
+                           ->progress();
+        }
+
+        return false;
+    }
+
+    /**
+     * @return array
+     */
+    private function gatherFilesToCompress(): array
+    {
+        $basePath   = $this->getBatchConfig()->getBasePath();
+        $extensions = implode(',', $this->getBatchConfig()->getFileExtensions());
+
+        return $this->globRecursive(
+            sprintf('%s/*.{%s}', $basePath, $extensions),
+            GLOB_BRACE
+        );
+    }
+
+    /**
+     * @return array
+     * @throws RuntimeException When the database couldn't be initialized.
+     */
+    private function loadCompressedFilesIds(): array
+    {
+        if (isset($this->copmressedFilesIds)) {
+            return $this->copmressedFilesIds;
+        }
+
+        $registryProto = clone $this->registryProto();
+
+        /** @var DatabaseSource $source */
+        $source = $registryProto->source();
+        $query  = $source->setProperties(['id'])
+                         ->sqlLoad();
+
+        $db = $source->db();
+        if (!$db) {
+            throw new RuntimeException(
+                'Could not instantiate a database connection.'
+            );
+        }
+        $this->logger->debug($query);
+
+        $sth = $db->prepare($query);
+        $sth->execute();
+        $this->copmressedFilesIds = (array)$sth->fetchAll(PDO::FETCH_COLUMN, 0);
+
+        return $this->copmressedFilesIds;
+    }
+
+    /**
+     * @return BatchCompressionConfig
+     */
+    public function getBatchConfig(): BatchCompressionConfig
+    {
+        return $this->getImageCompressionConfig()->getBatchConfig();
     }
 
     /**
