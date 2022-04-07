@@ -22,11 +22,16 @@ class Progression
     public int $compressed = 0;
 
     /**
+     * @var string
+     */
+    private string $currentFile;
+
+    /**
      * @param integer $total The progression starting point.
      */
     public function __construct(int $total)
     {
-        $this->total   = $total;
+        $this->total = $total;
     }
 
     /**
@@ -57,12 +62,33 @@ class Progression
 
     /**
      * @param boolean $success If compression was successful.
-     * @return void
+     * @return self
      */
-    public function updateCompressionCount(bool $success)
+    public function updateCompressionCount(bool $success): self
     {
         if ($success) {
             $this->compressed++;
         }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrentFile(): string
+    {
+        return $this->currentFile;
+    }
+
+    /**
+     * @param string $currentFile The currently compressing file.
+     * @return Progression
+     */
+    public function setCurrentFile(string $currentFile): Progression
+    {
+        $this->currentFile = $currentFile;
+
+        return $this;
     }
 }
