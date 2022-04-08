@@ -132,7 +132,7 @@ class ImageCompressionService
         $extensions = implode(',', $this->getBatchConfig()->getFileExtensions());
 
         return $this->globRecursive(
-            sprintf('%s/*.{%s}', $basePath, $extensions),
+            sprintf('%s/*.{%s}', $basePath, $this->caseInsensitivePattern($extensions)),
             GLOB_BRACE
         );
     }
@@ -252,6 +252,28 @@ class ImageCompressionService
                 '<span class="fa fa-asterisk" aria-hidden="true"></span><span>&nbsp; '.$msg.'</span>'
             );
         }
+    }
+
+    /**
+     * Returns a case-insensitive pattern useful for the glob function.
+     * For example: "jpg" becomes"[jJ][pP][gG]"
+     *
+     * @param string $pattern
+     * @return string
+     */
+    private function caseInsensitivePattern(string $pattern) : string
+    {
+        $ciPattern = '';
+        $length = strlen($pattern);
+        for ($i=0; $i<$length; $i++) {
+            $char = substr($pattern, $i, 1);
+            if (preg_match("/[^A-Za-z]/", $char) ) {
+                $ciPattern .= $char;
+            } else {
+                $ciPattern .= sprintf("[%s%s]", strtolower($char), strtoupper($char));
+            }
+        }
+        return $ciPattern;
     }
 
     /**
