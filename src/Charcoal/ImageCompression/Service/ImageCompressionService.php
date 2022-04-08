@@ -258,7 +258,7 @@ class ImageCompressionService
      * Returns a case-insensitive pattern useful for the glob function.
      * For example: "jpg" becomes"[jJ][pP][gG]"
      *
-     * @param string $pattern
+     * @param string $pattern The original string to modify.
      * @return string
      */
     private function caseInsensitivePattern(string $pattern) : string
@@ -267,10 +267,10 @@ class ImageCompressionService
         $length = strlen($pattern);
         for ($i=0; $i<$length; $i++) {
             $char = substr($pattern, $i, 1);
-            if (preg_match("/[^A-Za-z]/", $char) ) {
+            if (preg_match('/[^A-Za-z]/', $char)) {
                 $ciPattern .= $char;
             } else {
-                $ciPattern .= sprintf("[%s%s]", strtolower($char), strtoupper($char));
+                $ciPattern .= sprintf('[%s%s]', strtolower($char), strtoupper($char));
             }
         }
         return $ciPattern;
