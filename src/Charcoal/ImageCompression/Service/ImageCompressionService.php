@@ -261,7 +261,7 @@ class ImageCompressionService
      * @param string $pattern The original string to modify.
      * @return string
      */
-    private function caseInsensitivePattern(string $pattern) : string
+    private function caseInsensitiveGlobPattern(string $pattern) : string
     {
         $ciPattern = '';
         $length = strlen($pattern);
