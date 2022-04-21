@@ -132,7 +132,7 @@ class ImageCompressionService
         $extensions = implode(',', $this->getBatchConfig()->getFileExtensions());
 
         return $this->globRecursive(
-            sprintf('%s/*.{%s}', $basePath, $this->caseInsensitivePattern($extensions)),
+            sprintf('%s/*.{%s}', $basePath, $this->caseInsensitiveGlobPattern($extensions)),
             GLOB_BRACE
         );
     }
