@@ -9,17 +9,13 @@ use Charcoal\Config\AbstractConfig;
  */
 class ImageCompressionConfig extends AbstractConfig
 {
-    /**
-     * The model that'll serve to keep track of currently optimized images.
-     *
-     * @var string $registryObject
-     */
-    private string $registryObject;
+    private bool $autoCompress = true;
+    private ?BatchCompressionConfig $batchConfig = null;
 
     /**
-     * @var BatchCompressionConfig|null
+     * The model that'll serve to keep track of currently optimized images.
      */
-    private ?BatchCompressionConfig $batchConfig = null;
+    private string $registryObject;
 
     /**
      * The default data is defined in a JSON file.
@@ -28,10 +24,9 @@ class ImageCompressionConfig extends AbstractConfig
      */
     public function defaults(): array
     {
-        $baseDir = rtrim(realpath(__DIR__.'/../../../'), '/');
-        $confDir = $baseDir.'/config';
+        $confDir = dirname(__DIR__, 3) . '/config';
 
-        return $this->loadFile($confDir.'/image-compression.json');
+        return $this->loadFile($confDir . '/image-compression.json');
     }
 
     /**
@@ -68,6 +63,25 @@ class ImageCompressionConfig extends AbstractConfig
     public function setBatchConfig(array $batchConfig): self
     {
         $this->batchConfig = new BatchCompressionConfig($batchConfig);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getAutoCompress(): bool
+    {
+        return $this->autoCompress;
+    }
+
+    /**
+     * @param bool $autoCompress AutoCompress for ImageCompressionConfig.
+     * @return self
+     */
+    public function setAutoCompress(bool $autoCompress): self
+    {
+        $this->autoCompress = $autoCompress;
 
         return $this;
     }

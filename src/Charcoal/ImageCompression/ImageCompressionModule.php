@@ -10,8 +10,8 @@ use Charcoal\App\Module\ModuleInterface;
  */
 class ImageCompressionModule extends AbstractModule implements ModuleInterface
 {
-    const ADMIN_CONFIG = 'vendor/locomotivemtl/charcoal-image-compression/config/admin.json';
-    const APP_CONFIG = 'vendor/locomotivemtl/charcoal-image-compression/config/config.json';
+    public const ADMIN_CONFIG = 'vendor/locomotivemtl/charcoal-image-compression/config/admin.json';
+    public const APP_CONFIG = 'vendor/locomotivemtl/charcoal-image-compression/config/config.json';
 
     /**
      * Setup the module's dependencies.
