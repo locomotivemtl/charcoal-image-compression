@@ -2,7 +2,7 @@
 
 namespace Charcoal\ImageCompression\Event;
 
-use Charcoal\App\Event\AbstractEventListener;
+use Charcoal\Event\AbstractEventListener;
 use Charcoal\ImageCompression\Service\ImageCompressionService;
 use Pimple\Container;
 

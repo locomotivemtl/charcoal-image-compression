@@ -2,8 +2,8 @@
 
 namespace Charcoal\ImageCompression;
 
-use Charcoal\App\Event\AbstractListenerSubscriber;
-use Charcoal\App\Event\FileWasUploaded;
+use Charcoal\Event\AbstractListenerSubscriber;
+use Charcoal\Event\Events\FileWasUploaded;
 use Charcoal\ImageCompression\Event\CompressImageListener;
 use League\Event\ListenerRegistry;
 
