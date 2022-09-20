@@ -7,5 +7,10 @@
                 }
             }
         }
+    },
+    "events": {
+        "subscribers": [
+            "Charcoal\\ImageCompression\\ListenerSubscriber"
+        ]
     }
 }

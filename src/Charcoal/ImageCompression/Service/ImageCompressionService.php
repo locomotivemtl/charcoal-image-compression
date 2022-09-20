@@ -71,7 +71,8 @@ class ImageCompressionService
         }
 
         // validate compression
-        if ((isset($this->copmressedFilesIds) && in_array($registry['id'], $this->copmressedFilesIds))
+        if (
+            (isset($this->copmressedFilesIds) && in_array($registry['id'], $this->copmressedFilesIds))
             || $registry->isCompressed()
         ) {
             // Don't compress more than once.
@@ -249,7 +250,7 @@ class ImageCompressionService
             ]);
             $this->addFeedback(
                 'notice',
-                '<span class="fa fa-asterisk" aria-hidden="true"></span><span>&nbsp; '.$msg.'</span>'
+                '<span class="fa fa-asterisk" aria-hidden="true"></span><span>&nbsp; ' . $msg . '</span>'
             );
         }
     }
@@ -267,8 +268,8 @@ class ImageCompressionService
     {
         $files = glob($pattern, $flags);
 
-        foreach (glob(dirname($pattern).'/*', (GLOB_ONLYDIR | GLOB_NOSORT)) as $dir) {
-            $files = array_merge($files, $this->globRecursive($dir.'/'.basename($pattern), $flags));
+        foreach (glob(dirname($pattern) . '/*', (GLOB_ONLYDIR | GLOB_NOSORT)) as $dir) {
+            $files = array_merge($files, $this->globRecursive($dir . '/' . basename($pattern), $flags));
         }
 
         return $files;
