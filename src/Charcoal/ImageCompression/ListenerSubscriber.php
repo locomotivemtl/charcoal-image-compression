@@ -12,7 +12,6 @@ use League\Event\ListenerRegistry;
  */
 class ListenerSubscriber extends AbstractListenerSubscriber
 {
-
     /**
      * @param ListenerRegistry $acceptor
      * @return void
