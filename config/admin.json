@@ -6,11 +6,11 @@
                     "ident": "charcoal/admin/image-compression/script/batch-compress"
                 }
             }
+        },
+        "events": {
+            "subscribers": [
+                "Charcoal\\ImageCompression\\ListenerSubscriber"
+            ]
         }
-    },
-    "events": {
-        "subscribers": [
-            "Charcoal\\ImageCompression\\ListenerSubscriber"
-        ]
     }
 }
