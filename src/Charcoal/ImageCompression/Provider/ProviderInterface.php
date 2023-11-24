@@ -3,22 +3,16 @@
 namespace Charcoal\ImageCompression\Provider;
 
 /**
- * Interface: ProviderInterface
- * @package Charcoal\ImageCompression\Provider
+ * Compression Provider
  */
 interface ProviderInterface
 {
     /**
-     * @param string      $source The source file path.
-     * @param string|null $target The target file path, if empty, will overwrite the source file.
-     * @return boolean
-     * @throws ProviderException When a provider is failing.
+     * @param  string  $source The source file path.
+     * @param  ?string $target The target file path, if empty, will overwrite the source file.
+     * @return bool
      */
     public function compress(string $source, ?string $target = null): bool;
 
-    /**
-     * @return string|null
-     * @throws ProviderException When a provider is failing.
-     */
-    public function compressionCount(): ?string;
+    public function compressionCount(): int;
 }

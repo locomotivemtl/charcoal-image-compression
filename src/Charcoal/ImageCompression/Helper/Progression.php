@@ -2,32 +2,18 @@
 
 namespace Charcoal\ImageCompression\Helper;
 
-/**
- * Progression
- */
 class Progression
 {
-    /**
-     * @var integer
-     */
     public int $total;
-    /**
-     * @var integer
-     */
+
     public int $current = 0;
 
-    /**
-     * @var integer
-     */
     public int $compressed = 0;
 
-    /**
-     * @var string
-     */
     private string $currentFile;
 
     /**
-     * @param integer $total The progression starting point.
+     * @param int $total The progression starting point.
      */
     public function __construct(int $total)
     {
@@ -35,16 +21,13 @@ class Progression
     }
 
     /**
-     * @return float|integer
+     * @return float|int
      */
     public function percent()
     {
         return ($this->current / $this->total * 100);
     }
 
-    /**
-     * @return self
-     */
     public function progress(): self
     {
         $this->current++;
@@ -53,7 +36,7 @@ class Progression
     }
 
     /**
-     * @return integer The amount of compressed files.
+     * Returns the number of compressed files.
      */
     public function compressed(): int
     {
@@ -61,8 +44,7 @@ class Progression
     }
 
     /**
-     * @param boolean $success If compression was successful.
-     * @return self
+     * Indicates if compression was successful.
      */
     public function updateCompressionCount(bool $success): self
     {
@@ -73,19 +55,15 @@ class Progression
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getCurrentFile(): string
     {
         return $this->currentFile;
     }
 
     /**
-     * @param string $currentFile The currently compressing file.
-     * @return Progression
+     * Indicates the file currently being compressed.
      */
-    public function setCurrentFile(string $currentFile): Progression
+    public function setCurrentFile(string $currentFile): self
     {
         $this->currentFile = $currentFile;
 

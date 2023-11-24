@@ -15,72 +15,50 @@ use RuntimeException;
  */
 class Registry extends AbstractModel implements RegistryInterface
 {
-    /**
-     * @var integer|null
-     */
     protected ?int $size = null;
 
-    /**
-     * @var integer|null
-     */
     protected ?int $memorySaved = null;
 
-    /**
-     * @var integer|null
-     */
     protected ?int $originalSize = null;
 
     /**
      * The full path of the file.
-     *
-     * @var string|null
      */
     protected ?string $path = null;
 
-    /**
-     * @var string|null
-     */
     protected ?string $basename = null;
 
-    /**
-     * @var string|null
-     */
     protected ?string $filename = null;
 
-    /**
-     * @var string|null
-     */
     protected ?string $extension = null;
 
     /**
      * Set and parse the registry data from a file.
      *
-     * @param string $path The file path.
-     * @return self
+     * @param  string $path The file path.
      * @throws RuntimeException When the file path is invalid.
      */
-    public function fromFile(string $path): RegistryInterface
+    public function fromFile(string $path): self
     {
-        if (!file_exists($path)) {
-            throw new RuntimeException(sprintf(
-                'The file path [%s] doesn\'t exist in [%s]',
+        if (!\file_exists($path)) {
+            throw new RuntimeException(\sprintf(
+                'The file path [%s] does not exist in [%s]',
                 $path,
-                get_class($this)
+                \get_class($this)
             ));
         }
 
         $this->setData([
-            'id'   => md5_file($path),
+            'id'   => \md5_file($path),
             'path' => $path,
-            'size' => filesize($path),
-        ])->setData(pathinfo($path));
+            'size' => \filesize($path),
+        ])->setData(\pathinfo($path));
 
         return $this;
     }
 
     /**
-     * @param string|null $path Optional, the path of the file to check.
-     * @return boolean
+     * @param  ?string $path Optional, the path of the file to check.
      * @throws RuntimeException When the database connection fails.
      */
     public function isCompressed(string $path = null): bool
@@ -96,12 +74,16 @@ class Registry extends AbstractModel implements RegistryInterface
 
         /** @var DatabaseSource $source */
         $source = $this->source();
-        $query  = $source->setFilters([[
-            'property' => 'id',
-            'value'    => $this['id']
-        ]])->sqlLoadCount();
+        $source->setFilters([
+            [
+                'property' => 'id',
+                'value'    => $this['id'],
+            ],
+        ]);
 
-        $db = $this->source()->db();
+        $query = $source->sqlLoadCount();
+
+        $db = $source->db();
         if (!$db) {
             throw new RuntimeException(
                 'Could not instantiate a database connection.'
@@ -111,15 +93,13 @@ class Registry extends AbstractModel implements RegistryInterface
 
         $sth = $db->prepare($query);
         $sth->execute();
-        $res = $sth->fetchColumn(0);
+        $res = (int)$sth->fetchColumn(0);
 
-        return (bool)(int)$res;
+        return (bool)$res;
     }
 
     /**
      * The file size.
-     *
-     * @return integer|null
      */
     public function size(): ?int
     {
@@ -127,8 +107,7 @@ class Registry extends AbstractModel implements RegistryInterface
     }
 
     /**
-     * @param integer|null $size Size for Registry.
-     * @return self
+     * @param ?int $size Size for Registry.
      */
     public function setSize(?int $size): self
     {
@@ -143,8 +122,6 @@ class Registry extends AbstractModel implements RegistryInterface
 
     /**
      * The size of the file before compression.
-     *
-     * @return integer|null
      */
     public function originalSize(): ?int
     {
@@ -152,8 +129,7 @@ class Registry extends AbstractModel implements RegistryInterface
     }
 
     /**
-     * @param integer|null $originalSize OriginalSize for Registry.
-     * @return self
+     * @param ?int $originalSize OriginalSize for Registry.
      */
     public function setOriginalSize(?int $originalSize): self
     {
@@ -164,8 +140,6 @@ class Registry extends AbstractModel implements RegistryInterface
 
     /**
      * The amount of memory saved for the file after compression.
-     *
-     * @return integer|null
      */
     public function memorySaved(): ?int
     {
@@ -173,8 +147,7 @@ class Registry extends AbstractModel implements RegistryInterface
     }
 
     /**
-     * @param integer|null $memorySaved MemorySaved for Registry.
-     * @return self
+     * @param ?int $memorySaved MemorySaved for Registry.
      */
     public function setMemorySaved(?int $memorySaved): self
     {
@@ -183,17 +156,13 @@ class Registry extends AbstractModel implements RegistryInterface
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function basename(): ?string
     {
         return $this->basename;
     }
 
     /**
-     * @param string|null $basename Basename for Registry.
-     * @return self
+     * @param ?string $basename Basename for Registry.
      */
     public function setBasename(?string $basename): self
     {
@@ -202,17 +171,13 @@ class Registry extends AbstractModel implements RegistryInterface
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function filename(): ?string
     {
         return $this->filename;
     }
 
     /**
-     * @param string|null $filename Filename for Registry.
-     * @return self
+     * @param ?string $filename Filename for Registry.
      */
     public function setFilename(?string $filename): self
     {
@@ -221,17 +186,13 @@ class Registry extends AbstractModel implements RegistryInterface
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function extension(): ?string
     {
         return $this->extension;
     }
 
     /**
-     * @param string|null $extension Extension for Registry.
-     * @return self
+     * @param ?string $extension Extension for Registry.
      */
     public function setExtension(?string $extension): self
     {

@@ -16,15 +16,11 @@ use Pimple\ServiceProviderInterface;
 class ImageCompressionServiceProvider implements ServiceProviderInterface
 {
     /**
-     * @param Container $container Pimple DI container.
      * @return void
      */
     public function register(Container $container)
     {
-        /**
-         * @return ImageCompressionConfig
-         */
-        $container['image-compression/config'] = function (container $container) {
+        $container['image-compression/config'] = function (Container $container) {
             $configData = $container['config']->get('modules.charcoal/image-compression/image-compression');
 
             return new ImageCompressionConfig($configData);
@@ -33,8 +29,7 @@ class ImageCompressionServiceProvider implements ServiceProviderInterface
         /**
          * Factorize all providers in an array.
          *
-         * @param Container $container
-         * @return array
+         * @return array<ProviderInterface>
          */
         $container['image-compression/providers'] = function (Container $container) {
             $providers = $container['image-compression/config']->get('providers');
@@ -43,7 +38,7 @@ class ImageCompressionServiceProvider implements ServiceProviderInterface
                 return [];
             }
 
-            return array_map(function ($provider) use ($container) {
+            return \array_map(function ($provider) use ($container) {
                 $type = ($provider['type'] ?? null);
                 if (!$type) {
                     return null;
@@ -58,8 +53,7 @@ class ImageCompressionServiceProvider implements ServiceProviderInterface
         };
 
         /**
-         * @param Container $container The Pimple DI container.
-         * @return FactoryInterface
+         * @return \Charcoal\Factory\FactoryInterface
          */
         $container['image-compression/provider/factory'] = function (Container $container) {
             return new GenericFactory([
@@ -72,16 +66,12 @@ class ImageCompressionServiceProvider implements ServiceProviderInterface
                 ],
                 'callback'         => function ($provider) use ($container) {
                     $provider->setDependencies([
-                        'logger' => $container['logger']
+                        'logger' => $container['logger'],
                     ]);
-                }
+                },
             ]);
         };
 
-        /**
-         * @param Container $container The Pimple DI container.
-         * @return ImageCompressor
-         */
         $container['image-compressor'] = function (Container $container) {
             return new ImageCompressor([
                 'providers' => $container['image-compression/providers'],
@@ -89,11 +79,7 @@ class ImageCompressionServiceProvider implements ServiceProviderInterface
             ]);
         };
 
-        /**
-         * @param Container $container
-         * @return ImageCompressionService
-         */
-        $container['image-compression'] = function (container $container) {
+        $container['image-compression'] = function (Container $container) {
             return new ImageCompressionService([
                 'compressor'               => $container['image-compressor'],
                 'image-compression/config' => $container['image-compression/config'],

@@ -9,22 +9,14 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * Class BatchCompress
+ * CLI Script: Batch Compression
  */
 class BatchCompressScript extends AbstractScript
 {
-    /**
-     * @var ImageCompressionService
-     */
     private ImageCompressionService $imageCompressionService;
 
     /**
-     * @var string
-     */
-    private string $path;
-
-    /**
-     * @return array
+     * @return array<string, array<string, mixed>>
      */
     public function defaultArguments(): array
     {
@@ -34,18 +26,14 @@ class BatchCompressScript extends AbstractScript
             'path' => [
                 'longPrefix'   => 'path',
                 'description'  => 'Directory (relative) to process.',
-                'defaultValue' => $config->getBasePath()
+                'defaultValue' => $config->getBasePath(),
             ]
         ];
 
-        return array_merge(parent::defaultArguments(), $arguments);
+        return \array_merge(parent::defaultArguments(), $arguments);
     }
 
     /**
-     * Run the script.
-     *
-     * @param  RequestInterface  $request  A PSR-7 compatible Request instance.
-     * @param  ResponseInterface $response A PSR-7 compatible Response instance.
      * @return ResponseInterface
      */
     public function run(RequestInterface $request, ResponseInterface $response)
@@ -58,7 +46,7 @@ class BatchCompressScript extends AbstractScript
         $path = $climate->arguments->get('path');
 
         $climate->underline()->out(
-            sprintf('Optimize images ("%s")', $path)
+            \sprintf('Optimize images ("%s")', $path)
         );
 
         $progressBar = $climate->progress()->total(100);
@@ -67,27 +55,25 @@ class BatchCompressScript extends AbstractScript
         foreach ($this->imageCompressionService->batchCompress() as $progress) {
             $progressBar->current(
                 $progress->percent(),
-                sprintf('[%s / %s] Compressing: %s', $progress->current, $progress->total, $progress->getCurrentFile())
+                \sprintf(
+                    '[%s / %s] Compressing: %s',
+                    $progress->current,
+                    $progress->total,
+                    $progress->getCurrentFile()
+                )
             );
             $compressedFiles = $progress->compressed();
         };
 
         $climate->underline(
-            sprintf('%s files were compressed', $compressedFiles)
+            \sprintf('%s files were compressed', $compressedFiles)
         );
 
         return $response;
     }
 
     /**
-     * Give an opportunity to children classes to inject dependencies from a Pimple Container.
-     *
-     * Does nothing by default, reimplement in children classes.
-     *
-     * The `$container` DI-container (from `Pimple`) should not be saved or passed around, only to be used to
-     * inject dependencies (typically via setters).
-     *
-     * @param Container $container A dependencies container instance.
+     * @param  Container $container A dependencies container instance.
      * @return void
      */
     protected function setDependencies(Container $container)

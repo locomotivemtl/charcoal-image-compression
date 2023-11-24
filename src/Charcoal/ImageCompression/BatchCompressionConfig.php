@@ -5,31 +5,31 @@ namespace Charcoal\ImageCompression;
 use Charcoal\Config\AbstractConfig;
 
 /**
- *  Batch Compression Config
+ * Config: Batch Compression
  */
 class BatchCompressionConfig extends AbstractConfig
 {
     /**
-     * @var array
+     * The file extensions to glob while batch compressing.
+     *
+     * @var list<string>
      */
     protected array $fileExtensions = [];
 
     /**
+     * The base path to glob in while batch compressing.
+     *
      * @var string
      */
     protected string $basePath;
 
-    /**
-     * @return array
-     */
     public function getFileExtensions(): array
     {
         return $this->fileExtensions;
     }
 
     /**
-     * @param array $fileExtensions The file extensions to glob while batch compressing.
-     * @return self
+     * @param list<string> $fileExtensions
      */
     public function setFileExtensions(array $fileExtensions): self
     {
@@ -38,18 +38,11 @@ class BatchCompressionConfig extends AbstractConfig
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getBasePath(): string
     {
         return $this->basePath;
     }
 
-    /**
-     * @param string $basePath The base path to glob in while batch compressing.
-     * @return self
-     */
     public function setBasePath(string $basePath): self
     {
         $this->basePath = $basePath;
