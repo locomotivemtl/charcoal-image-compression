@@ -60,7 +60,7 @@ class ImageCompressionConfig extends AbstractConfig
      */
     public function setBatchConfig($config): self
     {
-        $this->batchConfig = new BatchCompressionConfig($config);
+        $this->getBatchConfig()->merge($config);
 
         return $this;
     }

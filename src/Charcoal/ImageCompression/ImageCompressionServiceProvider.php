@@ -21,9 +21,19 @@ class ImageCompressionServiceProvider implements ServiceProviderInterface
     public function register(Container $container)
     {
         $container['image-compression/config'] = function (Container $container) {
-            $configData = $container['config']->get('modules.charcoal/image-compression/image-compression');
+            $compressionConfig = new ImageCompressionConfig();
 
-            return new ImageCompressionConfig($configData);
+            $moduleSettings = $container['config']->get('modules.charcoal/image-compression/image-compression');
+            if ($moduleSettings) {
+                $compressionConfig->merge($moduleSettings);
+            }
+
+            $configSettings = $container['config']->get('image_compression');
+            if ($configSettings) {
+                $compressionConfig->merge($configSettings);
+            }
+
+            return $compressionConfig;
         };
 
         /**
@@ -33,7 +43,6 @@ class ImageCompressionServiceProvider implements ServiceProviderInterface
          */
         $container['image-compression/providers'] = function (Container $container) {
             $providers = $container['image-compression/config']->get('providers');
-
             if (!$providers) {
                 return [];
             }
