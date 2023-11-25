@@ -57,15 +57,15 @@ class ImageCompressionService
     }
 
     /**
-     * @param string $path The file to compress.
+     * @param string $filePath The file to compress.
      */
-    public function compress(string $path): bool
+    public function compress(string $filePath): bool
     {
         // Fetch file data
         /** @var \Charcoal\ImageCompression\Model\Registry */
         $registry = clone $this->registryProto();
         try {
-            $registry->fromFile($path);
+            $registry->fromFile($filePath);
         } catch (\Exception $e) {
             // Don't compress if registry data can't be loaded.
             // This usually means that an image is no longer on the server.
@@ -87,7 +87,7 @@ class ImageCompressionService
         }
 
         // compress
-        if ($this->getCompressor()->compress($path)) {
+        if ($this->getCompressor()->compress($filePath)) {
             $registry->setOriginalSize($registry['size']);
 
             \clearstatcache();
@@ -108,12 +108,15 @@ class ImageCompressionService
     }
 
     /**
+     * @param  ?string $basePath The base directory of files to compress.
+     *     If NULL or omitted, the base path from the batch compression
+     *     configset is used.
      * @return \Generator<bool>
      */
-    public function batchCompress()
+    public function batchCompress(?string $basePath = null)
     {
         $this->loadCompressedFilesIds();
-        $files = $this->gatherFilesToCompress();
+        $files = $this->gatherFilesToCompress($basePath);
 
         $numFiles = \count($files);
 
@@ -133,11 +136,14 @@ class ImageCompressionService
     }
 
     /**
+     * @param  ?string $basePath The base directory to retrieve files.
+     *     If NULL or omitted, the base path from the batch compression
+     *     configset is used.
      * @return string[]
      */
-    private function gatherFilesToCompress(): array
+    private function gatherFilesToCompress(?string $basePath = null): array
     {
-        $basePath   = $this->getBatchConfig()->getBasePath();
+        $basePath   ??= $this->getBatchConfig()->getBasePath();
         $extensions = \implode(',', $this->getBatchConfig()->getFileExtensions());
 
         return $this->globRecursive(

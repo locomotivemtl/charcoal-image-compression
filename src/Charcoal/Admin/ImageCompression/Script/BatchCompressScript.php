@@ -52,7 +52,7 @@ class BatchCompressScript extends AbstractScript
         $progressBar = $climate->progress()->total(100);
         $compressedFiles = 0;
 
-        foreach ($this->imageCompressionService->batchCompress() as $progress) {
+        foreach ($this->imageCompressionService->batchCompress($path) as $progress) {
             $progressBar->current(
                 $progress->percent(),
                 \sprintf(
