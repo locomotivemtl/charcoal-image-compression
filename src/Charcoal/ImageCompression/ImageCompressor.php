@@ -6,6 +6,7 @@ use Charcoal\ImageCompression\Provider\Chain\ChainProvider;
 use Charcoal\ImageCompression\Provider\ProviderException;
 use Charcoal\ImageCompression\Provider\ProviderInterface;
 use Exception;
+use InvalidArgumentException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
@@ -31,19 +32,22 @@ class ImageCompressor implements
     }
 
     /**
-     * @param ProviderInterface[] $providers List of providers for the compressor.
+     * @param  ProviderInterface[] $providers List of providers for the compressor.
+     * @throws InvalidArgumentException If no provider is defined.
      */
     public function setProviders(array $providers): self
     {
-        if (\count($providers) > 1) {
-            $this->provider = new ChainProvider($providers);
-        } else {
-            $provider = \array_pop($providers);
-            if ($provider) {
-                $this->setProvider($provider);
-            }
+        if (!$providers) {
+            throw new InvalidArgumentException(
+                'Expected at least one image compression provider'
+            );
         }
 
+        if (\count($providers) === 1) {
+            $this->setProvider(\reset($providers));
+        }
+
+        $this->provider = new ChainProvider($providers);
         return $this;
     }
 
