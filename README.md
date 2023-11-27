@@ -10,29 +10,12 @@ Charcoal ImageCompression
 A [Charcoal][charcoal-app] module to handle image compression through compression api providers
 
 
-## Table of Contents
-
--   [Installation](#installation)
-    -   [Dependencies](#dependencies)
--   [Service Provider](#service-provider)
-    -   [Services](#services)
--   [Configuration](#configuration)
--   [Usage](#usage)
--   [Development](#development)
-    -  [API Documentation](#api-documentation)
-    -  [Development Dependencies](#development-dependencies)
-    -  [Coding Style](#coding-style)
--   [Credits](#credits)
--   [License](#license)
-
-
-
 ## Installation
 
 The preferred (and only supported) method is with Composer:
 
 ```shell
-$ composer require locomotivemtl/charcoal-image-compression
+composer require locomotivemtl/charcoal-image-compression
 ```
 
 
@@ -59,8 +42,8 @@ The following services are provided with the use of [_charcoal-image-compression
 
 ### Services
 
-* [image-compression](src/Charcoal/ImageCompression/Service/ImageCompressionService.php) instance of `\Charcoal\ImageCompression\Service\ImageCompression`
-* [image-compressor](src/Charcoal/ImageCompression/ImageCompressor.php) instance of `\Charcoal\ImageCompression\ImageCompressor`
+* [`image-compression`](src/Charcoal/ImageCompression/Service/ImageCompressionService.php) instance of `\Charcoal\ImageCompression\Service\ImageCompression`
+* [`image-compressor`](src/Charcoal/ImageCompression/ImageCompressor.php) instance of `\Charcoal\ImageCompression\ImageCompressor`
 
 
 
@@ -69,40 +52,49 @@ The following services are provided with the use of [_charcoal-image-compression
 The configuration of the comporession module is done via the modules key of the project configuration.
 Charcoal image is hooked to use the compression module automatically once configured.
 
-```json
-{
-    // Full config with defaults options
-    "modules": {
-        "charcoal/image-compression/image-compression": {
-            "autoCompress": true,
-            "registryObject": "charcoal/image-compression/model/registry",
-            "batchConfig": {
-                "fileExtensions": [ "jpg", "jpeg", "png" ],
-                "basePath": "uploads"
-            },
-            "providers": [...]
-        }
-    },
-    
-    // Minimum config
-    "modules": {
-        "charcoal/image-compression/image-compression": {
-            "providers": [...]
-        }
+###### Example: Minimum configuration via `image_compression` definition
+
+```jsonc
+"image_compression": {
+    "providers": [/* … */]
+}
+```
+
+###### Example: Minimum configuration via `modules` definition
+
+```jsonc
+"modules": {
+    "charcoal/image-compression/image-compression": {
+        "providers": [/* … */]
     }
 }
 ```
 
+###### Example: Full configuration via `modules` definition with default options
+
+```jsonc
+"modules": {
+    "charcoal/image-compression/image-compression": {
+        "registryObject": "charcoal/image-compression/model/registry",
+        "batchConfig": {
+            "fileExtensions": [ "jpg", "jpeg", "png" ],
+            "basePath": "uploads"
+        },
+        "providers": [/* … */]
+    }
+},
+```
+
 ### Module Options
 
-| Option             | Type     | Description                                                                                                                                                 | Default                                     |
-|:-------------------|:---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------|
-| `autoCompress`     | _bool_   | (_todo_) Whether to compress files when they are saved in charcoal                                                                                          | `true`                                      |
-| `registryObject`   | _string_ | The registry object to keep track of compression                                                                                                            | `charcoal/image-compression/model/registry` |
-| `batchConfig`      | _object_ | Options for the batch compression process                                                                                                                   | `n/a`                                       |
-| ___`fileExtension` | _array_  | List of extensions to glob                                                                                                                                  | `[ "jpg", "jpeg", "png" ]`                  |
-| ___`basePath`      | _string_ | The base path to glob from                                                                                                                                  | `uploads`                                   |
-| `providers`        | _array_  | List of providers with their options. Each provider have it's own set of options to define. To learn more, refere to the following section about providers. | `[]`                                        |
+| Option             | Type       | Description                                                                                 | Default                                     |
+|:-------------------|:-----------|---------------------------------------------------------------------------------------------|:--------------------------------------------|
+| ~~`autoCompress`~~ | `bool`     | (_TODO_) Whether to compress files when they are saved in Charcoal.                         | `true`                                      |
+| `registryObject`   | `string`   | The registry object to keep track of compression.                                           | `charcoal/image-compression/model/registry` |
+| `batchConfig`      | `object`   | Options for the batch compression process.                                                  | `n/a`                                       |
+| `fileExtension`    | `string[]` | List of extensions used with [`glob()`].                                                    | `[ "jpg", "jpeg", "png" ]`                  |
+| `basePath`         | `string`   | The base path to glob from.                                                                 | `uploads`                                   |
+| `providers`        | `array[]`  | List of providers with their options. Each provider have it's own set of options to define. | `[]`                                        |
 
 ## Providers
 
@@ -115,51 +107,53 @@ for tinify provider.
     "providers": [
         {
             "type": "tinify",
-            "key": "sdkfjeiSADkd",
-            "maxCompressions": 500
+            "key": "XXXXXX"
         }
     ]
 }
 ```
 
-Multiple providers can be used at the same time and will be chained one after the other so that if a provider as reached a limit or fails, the next one on the list will be used instead.
+Multiple providers can be used at the same time and will be chained one after the other so that if
+a provider as reached a limit or fails, the next one on the list will be used instead.
 
-### List of `special` providers
+### List of special providers
 
-| Provider                                                                  | Package                                               | Feature                                                  | Stats                                                                                                                                                                                                                                                                                                                                       |
-|:--------------------------------------------------------------------------|:------------------------------------------------------|:---------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-[Chain](src/Charcoal/ImageCompression/Provider/Chain) | `locomotivemtl/charcoal-image-compression/chain-provider` | Chaining providers |
+| Provider                                              | Package                                                   | Features           |
+|:------------------------------------------------------|:----------------------------------------------------------|:-------------------|
+| [Chain](src/Charcoal/ImageCompression/Provider/Chain) | `locomotivemtl/charcoal-image-compression/chain-provider` | Chaining providers |
 
 
 ### List of available providers
 
-| Provider                                                                  | Package                                                    | Feature                                                      | Stats                                                                                                                                                                                                                                                                                                                                       |
-|:--------------------------------------------------------------------------|:-----------------------------------------------------------|:-------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-[Tinify](src/Charcoal/ImageCompression/Provider/Tinify) | `locomotivemtl/charcoal-image-compression/tinify-provider` | Jpg, png <br> [Website](https://tinypng.com/developers) |   
+| Provider                                                | Package                                                    | Features                                               |
+|:--------------------------------------------------------|:-----------------------------------------------------------|:-------------------------------------------------------|
+| [Tinify](src/Charcoal/ImageCompression/Provider/Tinify) | `locomotivemtl/charcoal-image-compression/tinify-provider` | JPG, PNG, [Learn more](https://tinypng.com/developers) |
 
 
 ## Usage
 
-By default, if a configuration for a provider is defined in the module's configuration,
-Charcoal Image properties will compress the uploaded images on the image save callback.
-Must use the option `autoCompress` set to `true` which is the default behavior.
+TODO
+
+~~By default, if provider is defined in the module's configuration,
+Charcoal image properties will compress the uploaded images on the image save callback.
+Must use the option `autoCompress` set to `true` which is the default behavior.~~
 
 ### Script
 
 A script is provided to compress images on the server in a batch.
 
 ```shell
-# default path
-$ vendor/bin/charcoal admin/image-compression/batch-compress
+# Using default path from configuration
+vendor/bin/charcoal admin/image-compression/batch-compress
 
-# with custom path
-$ vendor/bin/charcoal admin/image-compression/batch-compress --path my/custom/path
+# Using a custom path
+vendor/bin/charcoal admin/image-compression/batch-compress --path my/custom/path
 ```
 
 
-### ImageCompressor
+### Image Compressor
 
-The compression module can also be used as a standalone module via the ImageCompressor class.
+The compression module can also be used as a standalone module via the `ImageCompressor` class.
 A container service is provided to access it.
 
 ```php
@@ -170,7 +164,7 @@ $this->imageCompressor = $container['image-compressor'];
 $this->imageCompressor->compress($source, $target)
 ```
 
-The ImageCompressor class will use the predefined module configuration and providers. For a custom implementation, instantiate the providers manually
+The `ImageCompressor` class will use the predefined module configuration and providers. For a custom implementation, instantiate the providers manually
 
 ```php
 use Charcoal\ImageCompression\Provider\Tinify\TinifyProvider;
@@ -197,13 +191,13 @@ $chainProvider->compress($source, $target);
 To install the development environment:
 
 ```shell
-$ composer install
+composer install
 ```
 
 To run the scripts (phplint, phpcs, and phpunit):
 
 ```shell
-$ composer test
+composer test
 ```
 
 
@@ -252,7 +246,9 @@ Charcoal is licensed under the MIT license. See [LICENSE](LICENSE) for details.
 
 
 [charcoal-image-compression]:  https://packagist.org/packages/locomotivemtl/charcoal-image-compression
-[charcoal-app]:             https://packagist.org/packages/locomotivemtl/charcoal-app
+[charcoal-app]:                https://packagist.org/packages/locomotivemtl/charcoal-app
+
+[glob]: https://www.php.net/function.glob
 
 [dev-scrutinizer]:    https://scrutinizer-ci.com/g/locomotivemtl/charcoal-image-compression/
 [dev-coveralls]:      https://coveralls.io/r/locomotivemtl/charcoal-image-compression
