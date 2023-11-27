@@ -6,6 +6,7 @@ use Charcoal\ImageCompression\Provider\Chain\ChainProvider;
 use Charcoal\ImageCompression\Provider\ProviderException;
 use Charcoal\ImageCompression\Provider\ProviderInterface;
 use Exception;
+use InvalidArgumentException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
@@ -18,13 +19,10 @@ class ImageCompressor implements
 {
     use LoggerAwareTrait;
 
-    /**
-     * @var ProviderInterface
-     */
     private ProviderInterface $provider;
 
     /**
-     * @param array $data Initial data.
+     * @param array<string, mixed> $data Class dependencies.
      */
     public function __construct(array $data)
     {
@@ -34,28 +32,25 @@ class ImageCompressor implements
     }
 
     /**
-     * @param array|ProviderInterface[] $providers List of providers for the compressor.
-     * @return self
+     * @param  ProviderInterface[] $providers List of providers for the compressor.
+     * @throws InvalidArgumentException If no provider is defined.
      */
     public function setProviders(array $providers): self
     {
-        if (count($providers) > 1) {
-            $this->provider = new ChainProvider($providers);
-        } else {
-            $provider = array_shift($providers);
-
-            if ($provider) {
-                $this->setProvider($provider);
-            }
+        if (!$providers) {
+            throw new InvalidArgumentException(
+                'Expected at least one image compression provider'
+            );
         }
 
+        if (\count($providers) === 1) {
+            $this->setProvider(\reset($providers));
+        }
+
+        $this->provider = new ChainProvider($providers);
         return $this;
     }
 
-    /**
-     * @param ProviderInterface $provider Provider for the compressor.
-     * @return $this
-     */
     public function setProvider(ProviderInterface $provider): self
     {
         $this->provider = $provider;
@@ -64,27 +59,20 @@ class ImageCompressor implements
     }
 
     /**
-     * @param string      $source The source file path.
-     * @param string|null $target The target file path, if empty, will overwrite the source file.
-     * @return boolean
+     * {@inheritdoc}
+     *
      * @throws ProviderException When a provider is failing.
      */
     public function compress(string $source, ?string $target = null): bool
     {
-        // There is no provider in the config
-        if (!isset($this->provider)) {
-            $this->logger->warning('There are no compression provider(s) in the config.'.
-                ' {@see https://github.com/locomotivemtl/charcoal-image-compression'.
-                ' for more details on implementation.}');
-
-            return false;
-        }
-
         try {
             return $this->provider->compress($source, $target);
         } catch (Exception $e) {
             throw new ProviderException(
-                sprintf('There was a problem while compressing images using [%s] class', get_class($this->provider)),
+                \sprintf(
+                    'There was a problem while compressing images using [%s]',
+                    \get_class($this->provider)
+                ),
                 $e->getCode(),
                 $e
             );
@@ -92,22 +80,19 @@ class ImageCompressor implements
     }
 
     /**
-     * @return string|null
+     * {@inheritdoc}
+     *
      * @throws ProviderException When a provider is failing.
      */
-    public function compressionCount(): ?string
+    public function compressionCount(): int
     {
-        if (!isset($this->provider)) {
-            return false;
-        }
-
         try {
             return $this->provider->compressionCount();
         } catch (Exception $e) {
             throw new ProviderException(
-                sprintf(
-                    'There was a problem getting the compression count from the [%s] class',
-                    get_class($this->provider)
+                \sprintf(
+                    'There was a problem retrieving the compression count from [%s]',
+                    \get_class($this->provider)
                 ),
                 $e->getCode(),
                 $e

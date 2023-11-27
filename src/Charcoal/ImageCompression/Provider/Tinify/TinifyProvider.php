@@ -9,24 +9,24 @@ use Exception;
 /**
  * Tinify Provider
  *
- * Provides compression functionalities via Tinify apis.
+ * Provides compression functionality via the Tinify API.
  */
 class TinifyProvider extends AbstractProvider
 {
     /**
      * Flag to keep track if the connection as been validated at least once.
      *
-     * @var boolean $connectionValidated
+     * TRUE if connected, FALSE is unable to connect, NULL if not tested.
      */
-    private bool $connectionValidated = false;
+    private ?bool $connectionValidated = null;
 
     /**
-     * @var string $key
+     * The API key.
      */
     private string $key;
 
     /**
-     * @param array $options Provider options.
+     * @param array<string, mixed> $options Provider options.
      */
     public function __construct(array $options)
     {
@@ -36,21 +36,23 @@ class TinifyProvider extends AbstractProvider
     }
 
     /**
-     * @param string      $source The source file path.
-     * @param string|null $target The target file path, if empty, will overwrite the source file.
-     * @return boolean
      * @throws ProviderException When a provider is failing.
      */
-    public function compress(string $source, ?string $target = null): bool
+    public function assertValidConnection(): void
     {
         if (!$this->validateConnection()) {
-            throw new ProviderException('Could not validate connection with Tinify Api.');
+            throw new ProviderException('Could not validate connection with Tinify API');
         }
+    }
+
+    public function compress(string $source, ?string $target = null): bool
+    {
+        $this->assertValidConnection();
 
         // Overwrite the source file if target is missing.
         $target = ($target ?? $source);
 
-        if (!file_exists($source)) {
+        if (!\file_exists($source)) {
             return false;
         }
 
@@ -59,7 +61,7 @@ class TinifyProvider extends AbstractProvider
             $tinifySource->toFile($target);
         } catch (Exception $e) {
             throw new ProviderException(
-                sprintf('There was a problem compressing [%s] with Tinify provider', $source),
+                \sprintf('There was a problem compressing [%s] with Tinify provider', $source),
                 $e->getCode(),
                 $e
             );
@@ -68,34 +70,33 @@ class TinifyProvider extends AbstractProvider
         return true;
     }
 
-    /**
-     * @return string|null
-     * @throws ProviderException When a provider is failing.
-     */
-    public function compressionCount(): ?string
+    public function compressionCount(): int
     {
-        if (!$this->validateConnection()) {
-            throw new ProviderException('Could not validate connection with Tinify Api.');
-        }
+        $this->assertValidConnection();
 
-        return \Tinify\compressionCount();
+        return (int)\Tinify\compressionCount();
     }
 
     /**
-     * ValidateConnection should be called before each query to ensure the right key is being used.
+     * Should be called before each query to ensure the right key is being used.
      *
-     * @return boolean
      * @throws ProviderException When the connection as failed.
      */
     public function validateConnection(): bool
     {
-        if (!$this->connectionValidated) {
+        if ($this->connectionValidated === null) {
             try {
-                // This key reallocation ensures the API is set with the correct key since the API is rather stateless.
-                \tinify\setKey($this->key);
+                // This key reallocation ensures the API is set with
+                // the correct key since the API is rather stateless.
+                \Tinify\setKey($this->key);
                 $this->connectionValidated = \Tinify\validate();
             } catch (\Exception $e) {
-                throw new ProviderException('Could not authenticate with Tinify', $e->getCode(), $e);
+                $this->connectionValidated = false;
+                throw new ProviderException(
+                    'Could not authenticate with Tinify',
+                    $e->getCode(),
+                    $e
+                );
             }
         }
 

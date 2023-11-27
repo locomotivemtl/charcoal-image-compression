@@ -10,14 +10,14 @@ use Charcoal\Config\AbstractConfig;
 class ImageCompressionConfig extends AbstractConfig
 {
     /**
-     * The model that'll serve to keep track of currently optimized images.
+     * The model type that will serve to keep track of currently optimized images.
      *
-     * @var string $registryObject
+     * @var class-string
      */
     private string $registryObject;
 
     /**
-     * @var BatchCompressionConfig|null
+     * The batch compression settings.
      */
     private ?BatchCompressionConfig $batchConfig = null;
 
@@ -28,23 +28,19 @@ class ImageCompressionConfig extends AbstractConfig
      */
     public function defaults(): array
     {
-        $baseDir = rtrim(realpath(__DIR__.'/../../../'), '/');
-        $confDir = $baseDir.'/config';
+        $baseDir = \rtrim(\realpath(__DIR__ . '/../../../'), '/');
+        $confDir = $baseDir . '/config';
 
-        return $this->loadFile($confDir.'/image-compression.json');
+        return $this->loadFile($confDir . '/image-compression.json');
     }
 
-    /**
-     * @return string
-     */
     public function getRegistryObject(): string
     {
         return $this->registryObject;
     }
 
     /**
-     * @param string $registryObject RegistryObject for ImageCompressionConfig.
-     * @return self
+     * @param class-string $registryObject
      */
     public function setRegistryObject(string $registryObject): self
     {
@@ -53,21 +49,18 @@ class ImageCompressionConfig extends AbstractConfig
         return $this;
     }
 
-    /**
-     * @return BatchCompressionConfig|null
-     */
     public function getBatchConfig(): ?BatchCompressionConfig
     {
-        return $this->batchConfig;
+        return $this->batchConfig ??= new BatchCompressionConfig();
     }
 
     /**
-     * @param array $batchConfig The batch configuration as array.
-     * @return self
+     * @param mixed $config The batch configuration settings.
+     *     Either a file path, an associative array, or a traversable object.
      */
-    public function setBatchConfig(array $batchConfig): self
+    public function setBatchConfig($config): self
     {
-        $this->batchConfig = new BatchCompressionConfig($batchConfig);
+        $this->getBatchConfig()->merge($config);
 
         return $this;
     }

@@ -2,7 +2,7 @@
     "sources": {
         "default": {
             "type": "database",
-            "table": "compression_registries"
+            "table": "charcoal_image_compressions"
         }
     },
     "default_source": "default",

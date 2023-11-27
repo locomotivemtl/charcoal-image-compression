@@ -4,10 +4,10 @@
     "description": "Charcoal module to handle image compression through compression api providers",
     "keywords": [
         "charcoal",
-        "Image",
-        "Optimization",
-        "Compression",
-        "Compress"
+        "image",
+        "optimization",
+        "compression",
+        "compress"
     ],
     "homepage": "https://locomotivemtl.github.io/charcoal-image-compression/",
     "license": "MIT",
@@ -19,20 +19,20 @@
     ],
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "extra": {
-        "branch-alias": {
-            "dev-master": "0.1.x-dev"
-        }
-    },
     "require": {
-        "php": ">7.4",
-        "tinify/tinify": "^1.5",
-        "ext-pdo": "*"
+        "php": ">=7.4",
+        "ext-pdo": "*",
+        "locomotivemtl/charcoal-config": "^0.10.1",
+        "locomotivemtl/charcoal-core": "^0.6.4",
+        "locomotivemtl/charcoal-factory": "^0.4.2",
+        "pimple/pimple": "^3.5",
+        "tinify/tinify": "^1.5"
     },
     "require-dev": {
+        "locomotivemtl/charcoal-app": "^0.9.2",
+        "php-coveralls/php-coveralls": "^2.2",
         "phpunit/phpunit": "^7.4",
-        "squizlabs/php_codesniffer": "^3.6",
-        "php-coveralls/php-coveralls": "^2.2"
+        "squizlabs/php_codesniffer": "^3.6"
     },
     "autoload": {
         "psr-4": {
@@ -43,6 +43,18 @@
         "psr-4": {
             "Charcoal\\Tests\\": "tests/Charcoal/"
         }
+    },
+    "suggest": {
+        "locomotivemtl/charcoal-admin": "Allows for managing and image compression and viewing results of compressions.",
+        "locomotivemtl/charcoal-app": "Needed to use the image compression module instead of the service provider for bootstrapping."
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.2.x-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
     },
     "scripts": {
         "test": [

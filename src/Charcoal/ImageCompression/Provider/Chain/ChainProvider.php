@@ -8,7 +8,7 @@ use Charcoal\ImageCompression\Provider\ProviderInterface;
 use Exception;
 
 /**
- * Class ChainProvider
+ * Chain Provider
  */
 class ChainProvider extends AbstractProvider implements ProviderInterface
 {
@@ -26,9 +26,8 @@ class ChainProvider extends AbstractProvider implements ProviderInterface
     }
 
     /**
-     * @param string      $source The source file path.
-     * @param string|null $target The target file path, if empty, will overwrite the source file.
-     * @return boolean
+     * {@inheritdoc}
+     *
      * @throws ProviderException When a provider is failing.
      */
     public function compress(string $source, ?string $target = null): bool
@@ -43,19 +42,23 @@ class ChainProvider extends AbstractProvider implements ProviderInterface
                 // @todo: Log exception and keep looping through providers
                 continue;
             } catch (Exception $e) {
-                throw new ProviderException('There was an error processing the chain provider', $e->getCode(), $e);
+                throw new ProviderException(
+                    'There was an error processing the chain provider',
+                    $e->getCode(),
+                    $e
+                );
             }
         }
 
         return false;
     }
 
-    /**
-     * @return string|null
-     * @throws ProviderException When a provider is failing.
-     */
-    public function compressionCount(): ?string
+    public function compressionCount(): int
     {
-        return array_reduce($this->providers, fn($carry, $provider) => ($carry + $provider->compressionCount()));
+        return \array_reduce(
+            $this->providers,
+            fn($carry, $provider) => ($carry + $provider->compressionCount()),
+            0
+        );
     }
 }

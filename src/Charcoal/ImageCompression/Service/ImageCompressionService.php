@@ -2,7 +2,7 @@
 
 namespace Charcoal\ImageCompression\Service;
 
-use Charcoal\Admin\Ui\FeedbackContainerTrait;
+// use Charcoal\Admin\Ui\FeedbackContainerTrait;
 use Charcoal\ImageCompression\BatchCompressionConfig;
 use Charcoal\ImageCompression\Contract\Model\RegistryInterface;
 use Charcoal\ImageCompression\Helper\Progression;
@@ -24,23 +24,28 @@ use RuntimeException;
 class ImageCompressionService
 {
     use TranslatorAwareTrait;
-    use FeedbackContainerTrait;
+    // use FeedbackContainerTrait;
     use LoggerAwareTrait;
     use ModelFactoryTrait;
 
-    /**
-     * @var ImageCompressor
-     */
     private ImageCompressor $compressor;
 
-    /**
-     * @var ImageCompressionConfig
-     */
     private ImageCompressionConfig $imageCompressionConfig;
 
     /**
-     * @param array $data The initial data array.
-     * @return void
+     * List of compressed file IDs from the Registry.
+     */
+    private ?array $copmressedFilesIds = null;
+
+    /**
+     * The singleton Registry model.
+     *
+     * @var (RegistryInterface&ModelInterface)
+     */
+    private ?RegistryInterface $registryProto = null;
+
+    /**
+     * @param array<string, mixed> $data Class dependencies.
      */
     public function __construct(array $data = [])
     {
@@ -52,16 +57,15 @@ class ImageCompressionService
     }
 
     /**
-     * @param string $path The file to compress.
-     * @return boolean
+     * @param string $filePath The file to compress.
      */
-    public function compress(string $path): bool
+    public function compress(string $filePath): bool
     {
         // Fetch file data
-        /** @var RegistryInterface $file */
+        /** @var \Charcoal\ImageCompression\Model\Registry */
         $registry = clone $this->registryProto();
         try {
-            $registry->fromFile($path);
+            $registry->fromFile($filePath);
         } catch (\Exception $e) {
             // Don't compress if registry data can't be loaded.
             // This usually means that an image is no longer on the server.
@@ -70,19 +74,24 @@ class ImageCompressionService
             return false;
         }
 
-        // validate compression
-        if ((isset($this->copmressedFilesIds) && in_array($registry['id'], $this->copmressedFilesIds))
-            || $registry->isCompressed()
+        // Validate compression
+        if (
+            (
+                \is_array($this->copmressedFilesIds) &&
+                \in_array($registry['id'], $this->copmressedFilesIds)
+            ) ||
+            $registry->isCompressed()
         ) {
             // Don't compress more than once.
             return false;
         }
 
         // compress
-        if ($this->getCompressor()->compress($path)) {
+        if ($this->getCompressor()->compress($filePath)) {
             $registry->setOriginalSize($registry['size']);
 
-            clearstatcache();
+            \clearstatcache();
+
             $registry->fromFile($registry['path']);
 
             // After compressing, it's possible a file that was once compressed,
@@ -99,14 +108,17 @@ class ImageCompressionService
     }
 
     /**
-     * @return Generator|boolean
+     * @param  ?string $basePath The base directory of files to compress.
+     *     If NULL or omitted, the base path from the batch compression
+     *     configset is used.
+     * @return \Generator<bool>
      */
-    public function batchCompress()
+    public function batchCompress(?string $basePath = null)
     {
         $this->loadCompressedFilesIds();
-        $files = $this->gatherFilesToCompress();
+        $files = $this->gatherFilesToCompress($basePath);
 
-        $numFiles = count($files);
+        $numFiles = \count($files);
 
         if (!$numFiles) {
             return false;
@@ -124,35 +136,38 @@ class ImageCompressionService
     }
 
     /**
-     * @return array
+     * @param  ?string $basePath The base directory to retrieve files.
+     *     If NULL or omitted, the base path from the batch compression
+     *     configset is used.
+     * @return string[]
      */
-    private function gatherFilesToCompress(): array
+    private function gatherFilesToCompress(?string $basePath = null): array
     {
-        $basePath   = $this->getBatchConfig()->getBasePath();
-        $extensions = implode(',', $this->getBatchConfig()->getFileExtensions());
+        $basePath   ??= $this->getBatchConfig()->getBasePath();
+        $extensions = \implode(',', $this->getBatchConfig()->getFileExtensions());
 
         return $this->globRecursive(
-            sprintf('%s/*.{%s}', $basePath, $extensions),
-            GLOB_BRACE
+            \sprintf('%s/*.{%s}', $basePath, $extensions),
+            \GLOB_BRACE
         );
     }
 
     /**
-     * @return array
+     * @return (int|string)[]
      * @throws RuntimeException When the database couldn't be initialized.
      */
     private function loadCompressedFilesIds(): array
     {
-        if (isset($this->copmressedFilesIds)) {
+        if (\is_array($this->copmressedFilesIds)) {
             return $this->copmressedFilesIds;
         }
 
-        $registryProto = clone $this->registryProto();
+        $registry = clone $this->registryProto();
 
         /** @var DatabaseSource $source */
-        $source = $registryProto->source();
-        $query  = $source->setProperties(['id'])
-                         ->sqlLoad();
+        $source = $registry->source();
+        $source->setProperties([ 'id' ]);
+        $query  = $source->sqlLoad();
 
         $db = $source->db();
         if (!$db) {
@@ -169,45 +184,28 @@ class ImageCompressionService
         return $this->copmressedFilesIds;
     }
 
-    /**
-     * @return BatchCompressionConfig
-     */
     public function getBatchConfig(): BatchCompressionConfig
     {
         return $this->getImageCompressionConfig()->getBatchConfig();
     }
 
-    /**
-     * @return ImageCompressionConfig
-     */
     public function getImageCompressionConfig(): ImageCompressionConfig
     {
         return $this->imageCompressionConfig;
     }
 
-    /**
-     * @param ImageCompressionConfig $imageCompressionConfig ImageCompressionConfig for ImageCompressionService.
-     * @return self
-     */
-    public function setImageCompressionConfig(ImageCompressionConfig $imageCompressionConfig): ImageCompressionService
+    public function setImageCompressionConfig(ImageCompressionConfig $imageCompressionConfig): self
     {
         $this->imageCompressionConfig = $imageCompressionConfig;
 
         return $this;
     }
 
-    /**
-     * @return ImageCompressor
-     */
     public function getCompressor(): ImageCompressor
     {
         return $this->compressor;
     }
 
-    /**
-     * @param ImageCompressor $compressor Compressor for ImageCompressionService.
-     * @return self
-     */
     public function setCompressor(ImageCompressor $compressor): self
     {
         $this->compressor = $compressor;
@@ -216,11 +214,11 @@ class ImageCompressionService
     }
 
     /**
-     * @return RegistryInterface|mixed
+     * @return (RegistryInterface&ModelInterface)
      */
-    protected function registryProto()
+    protected function registryProto(): RegistryInterface
     {
-        if (isset($this->registryProto)) {
+        if ($this->registryProto) {
             return $this->registryProto;
         }
 
@@ -234,41 +232,43 @@ class ImageCompressionService
     // ==========================================================================
 
     /**
-     * @param ModelInterface $proto Prototype to ensure table creation for.
-     * @return void
+     * @param (RegistryInterface&\Charcoal\Model\AbstractModel) $proto
      */
-    private function createObjTable(ModelInterface $proto)
+    private function createObjTable(ModelInterface $proto): void
     {
         /** @var DatabaseSourceInterface $source */
         $source = $proto->source();
 
         if ($source->tableExists() === false) {
             $source->createTable();
-            $msg = $this->translator()->translate('Database table created for "{{ objType }}".', [
-                '{{ objType }}' => $proto->objType()
-            ]);
-            $this->addFeedback(
-                'notice',
-                '<span class="fa fa-asterisk" aria-hidden="true"></span><span>&nbsp; '.$msg.'</span>'
-            );
+            // $msg = $this->translator()->translate('Database table created for "{{ objType }}".', [
+            //     '{{ objType }}' => $proto->objType()
+            // ]);
+            // $this->addFeedback(
+            //     'notice',
+            //     '<span class="fa fa-asterisk" aria-hidden="true"></span><span>&nbsp; '.$msg.'</span>'
+            // );
         }
     }
 
     /**
-     * Recursively find path names matching a pattern
-     *                         an empty array if no file matched or FALSE on error.
-     * @param string  $pattern The search pattern.
-     * @param integer $flags   The glob flags.
-     * @return array   Returns an array containing the matched files/directories,
-     * @see glob() for a description of the function and its parameters.
+     * Recursively find path names matching a pattern an empty array
+     * if no file matched or FALSE on error.
      *
+     * @param  string $pattern The search pattern.
+     * @param  int    $flags   The glob flags.
+     * @return string[] Returns an array containing the matched files/directories,
+     *     See {@see glob()} for a description of the function and its parameters.
      */
     private function globRecursive(string $pattern, int $flags = 0): array
     {
-        $files = glob($pattern, $flags);
+        $files = \glob($pattern, $flags);
 
-        foreach (glob(dirname($pattern).'/*', (GLOB_ONLYDIR | GLOB_NOSORT)) as $dir) {
-            $files = array_merge($files, $this->globRecursive($dir.'/'.basename($pattern), $flags));
+        foreach (\glob(\dirname($pattern) . '/*', (\GLOB_ONLYDIR | \GLOB_NOSORT)) as $dir) {
+            $files = \array_merge(
+                $files,
+                $this->globRecursive($dir . '/' . \basename($pattern), $flags)
+            );
         }
 
         return $files;

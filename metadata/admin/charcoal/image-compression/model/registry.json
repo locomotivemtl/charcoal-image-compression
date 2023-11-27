@@ -97,7 +97,7 @@
             "admin.edit": {
                 "layout": {
                     "structure": [
-                        {"columns": [1]}
+                        { "columns": [ 1 ] }
                     ]
                 },
                 "widgets": {
@@ -111,14 +111,14 @@
             "admin.table": {
                 "layout": {
                     "structure": [
-                        {"columns": [1]}
+                        { "columns": [ 1 ] }
                     ]
                 },
                 "widgets": {
                     "table": {
                         "type": "charcoal/admin/widget/table",
                         "collection_ident": "default",
-                        "data_sources": ["request"]
+                        "data_sources": [ "request" ]
                     }
                 }
             }

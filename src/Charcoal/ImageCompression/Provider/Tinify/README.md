@@ -11,7 +11,7 @@ This is an image compression provider for the Tinify API. Can be used alone or w
 
 ## Configuration
 
-The Tinify provider needs a Tinify **Api key**. The configuration can be project wide or scoped to the provider while instantiating.
+The Tinify provider needs a Tinify **API key**. The configuration can be project wide or scoped to the provider while instantiating.
 
 In project conifg, to use with ImageCompression module :
 ```json
